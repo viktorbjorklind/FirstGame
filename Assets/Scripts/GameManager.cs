@@ -12,11 +12,20 @@ public class GameManager : MonoBehaviour
     private int score;
     private bool isGameOver = false;
 
+    public TextMeshProUGUI highScoreText;
+    private int highScore = 0;
+
     void Awake()
     {
         Instance = this;
         Time.timeScale = 1f;
         gameOverPanel.SetActive(false);
+
+        highScore = PlayerPrefs.GetInt("HighScore", 0);
+        if (highScoreText != null)
+        {
+            highScoreText.text = "High Score: " + highScore;
+        }
     }
 
     public void AddScore(int amount)
@@ -33,6 +42,17 @@ public class GameManager : MonoBehaviour
         Debug.Log("Activating Game Over Panel");
         Time.timeScale = 0f;
         gameOverPanel.SetActive(true);
+
+        if (score > highScore)
+        {
+            highScore = score;
+            PlayerPrefs.SetInt("HighScore", highScore);
+            PlayerPrefs.Save();
+            if (highScoreText != null)
+            {
+                highScoreText.text = "High Score: " + highScore;
+            }
+        } 
     }
 
     public void RestartGame()
